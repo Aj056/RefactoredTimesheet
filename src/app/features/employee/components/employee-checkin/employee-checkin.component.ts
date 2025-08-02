@@ -1,0 +1,355 @@
+import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { 
+  CardComponent, 
+  ReusableButtonComponent,
+  ToastService 
+} from '../../../../shared/components';
+
+interface TimeLog {
+  date: string;
+  checkin: string;
+  checkout: string;
+  totalhours: string;
+  autocheckout: boolean;
+  _id: string;
+}
+
+interface Employee {
+  _id: string;
+  employeeName: string;
+  status: boolean;
+  timelog: TimeLog[];
+}
+
+interface CheckinResponse {
+  message: string;
+  timelog: TimeLog[];
+}
+
+@Component({
+  selector: 'app-employee-checkin',
+  standalone: true,
+  imports: [CommonModule, CardComponent, ReusableButtonComponent],
+  template: `
+    <app-card class="relative overflow-hidden hover:shadow-lg transition-all duration-300">
+      <!-- Background decoration -->
+      <div class="absolute inset-0 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-900/10 dark:via-emerald-900/10 dark:to-teal-900/10 transition-colors"></div>
+      <div class="absolute top-0 right-0 w-20 sm:w-28 h-20 sm:h-28 bg-green-100 dark:bg-green-800/10 rounded-full -translate-y-10 sm:-translate-y-14 translate-x-10 sm:translate-x-14 opacity-30 dark:opacity-20"></div>
+      <div class="absolute bottom-0 left-0 w-16 sm:w-20 h-16 sm:h-20 bg-teal-100 dark:bg-teal-800/10 rounded-full translate-y-8 sm:translate-y-10 -translate-x-8 sm:-translate-x-10 opacity-30 dark:opacity-20"></div>
+      
+      <!-- Content -->
+      <div class="relative z-10 p-4 sm:p-6">
+        <!-- Current Status -->
+        <div class="mb-6">
+          @if (isCheckedIn()) {
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/30 rounded-lg p-4 text-center">
+              <div class="flex items-center justify-center mb-2">
+                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse mr-2"></div>
+                <span class="text-sm font-medium text-green-600 dark:text-green-400">Currently Working</span>
+              </div>
+              <p class="text-xs text-green-600 dark:text-green-400 mb-3">
+                Started at {{ checkInTime() || '9:00 AM' }}
+              </p>
+              <div class="text-2xl font-bold text-green-800 dark:text-green-300 font-mono">
+                {{ workingHours() }}
+              </div>
+              <p class="text-xs text-green-600 dark:text-green-400 mt-1">Hours worked today</p>
+            </div>
+          } @else {
+            <div class="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50 rounded-lg p-4 text-center">
+              <div class="flex items-center justify-center mb-2">
+                <div class="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  @if (lastAction()?.type === 'Check-out') {
+                    Work Completed
+                  } @else {
+                    Not Working
+                  }
+                </span>
+              </div>
+              @if (lastAction()?.type === 'Check-out') {
+                <p class="text-sm text-gray-700 dark:text-gray-300 mb-2">You have completed your work for today</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  Total time worked: {{ workingHours() }}
+                </p>
+              } @else {
+                <p class="text-sm text-gray-700 dark:text-gray-300 mb-2">Ready to start your day?</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Click the button below to check in</p>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Action Button -->
+        <div class="flex justify-center">
+          @if (isCheckedIn()) {
+            <app-reusable-button
+              text="Check Out"
+              variant="danger"
+              size="lg"
+              icon="logout"
+              [disabled]="isLoading()"
+              (click)="checkOut()"
+              class="min-w-[140px]" />
+          } @else {
+            <app-reusable-button
+              text="Check In"
+              variant="primary"
+              size="lg"
+              icon="login"
+              [disabled]="isLoading() || (lastAction()?.type === 'Check-out')"
+              (click)="checkIn()"
+              class="min-w-[140px]" />
+          }
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading()) {
+          <div class="flex items-center justify-center mt-4">
+            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600 dark:border-green-400"></div>
+            <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Processing...</span>
+          </div>
+        }
+
+        <!-- Last Action -->
+        @if (lastAction()) {
+          <div class="text-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Last {{ lastAction()?.type }}: {{ lastAction()?.time }}
+            </p>
+          </div>
+        }
+      </div>
+    </app-card>
+  `,
+  styles: [`
+    :host {
+      display: block;
+    }
+  `]
+})
+export class EmployeeCheckinComponent implements OnInit, OnDestroy {
+  private readonly http = inject(HttpClient);
+  private readonly toastService = inject(ToastService);
+
+  // API configuration
+  private readonly API_BASE_URL = 'https://attendance-three-lemon.vercel.app';
+  private readonly EMPLOYEE_ID = '6880defb04cb9eaa25acbc06'; // This should come from auth service in real app
+
+  // Component state signals
+  readonly isLoading = signal(false);
+  readonly isCheckedIn = signal(false);
+  readonly checkInTime = signal<string>('');
+  readonly workingHours = signal<string>('00:00:00');
+  readonly lastAction = signal<{type: string, time: string} | null>(null);
+  readonly currentTimeLog = signal<TimeLog | null>(null);
+
+  // Timer for working hours calculation
+  private workingTimeInterval: number | null = null;
+
+  ngOnInit(): void {
+    this.loadEmployeeStatus();
+  }
+
+  ngOnDestroy(): void {
+    this.stopWorkingTimeCounter();
+  }
+
+  async checkIn(): Promise<void> {
+    if (this.isCheckedIn() || this.isLoading()) return;
+
+    this.isLoading.set(true);
+
+    try {
+      const response = await this.http.post<CheckinResponse>(
+        `${this.API_BASE_URL}/checkin`,
+        { id: this.EMPLOYEE_ID }
+      ).toPromise();
+
+      if (response && response.timelog.length > 0) {
+        const timeLog = response.timelog[0];
+        this.currentTimeLog.set(timeLog);
+        this.isCheckedIn.set(true);
+        
+        // Format check-in time
+        const checkInDate = new Date(timeLog.checkin);
+        const timeString = checkInDate.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+        
+        this.checkInTime.set(timeString);
+        this.lastAction.set({
+          type: 'Check-in',
+          time: timeString
+        });
+
+        // Start working time counter
+        this.startWorkingTimeCounter(checkInDate);
+        
+        this.toastService.success(`${response.message} at ${timeString}`);
+      }
+    } catch (error: any) {
+      console.error('Check-in failed:', error);
+      
+      // Handle specific API error messages
+      if (error.status === 400 && error.error?.message === 'Already checked in today') {
+        this.toastService.error('You have already completed your work for today. Check-in is not allowed after checkout.');
+      } else if (error.error?.message) {
+        this.toastService.error(error.error.message);
+      } else {
+        this.toastService.error('Check-in failed. Please try again.');
+      }
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  async checkOut(): Promise<void> {
+    if (!this.isCheckedIn() || this.isLoading()) return;
+
+    this.isLoading.set(true);
+
+    try {
+      const response = await this.http.post<CheckinResponse>(
+        `${this.API_BASE_URL}/checkout`,
+        { id: this.EMPLOYEE_ID }
+      ).toPromise();
+
+      if (response) {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+
+        // Stop working time counter
+        this.stopWorkingTimeCounter();
+        
+        this.isCheckedIn.set(false);
+        this.lastAction.set({
+          type: 'Check-out',
+          time: timeString
+        });
+
+        // Get final working time before reset
+        const totalTime = this.workingHours();
+        
+        this.toastService.success(`Checked out successfully at ${timeString}. Total working time: ${totalTime}`);
+        
+        // Reset for next day
+        this.checkInTime.set('');
+        this.workingHours.set('00:00:00');
+        this.currentTimeLog.set(null);
+      }
+    } catch (error: any) {
+      console.error('Check-out failed:', error);
+      
+      // Handle specific API error messages
+      if (error.status === 403 && error.error?.message) {
+        this.toastService.error(error.error.message);
+      } else if (error.error?.message) {
+        this.toastService.error(error.error.message);
+      } else {
+        this.toastService.error('Check-out failed. Please try again.');
+      }
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  private async loadEmployeeStatus(): Promise<void> {
+    try {
+      const employee = await this.http.get<Employee>(
+        `${this.API_BASE_URL}/view/${this.EMPLOYEE_ID}`
+      ).toPromise();
+
+      if (employee) {
+        // Check if timelog is empty (new day)
+        if (employee.timelog.length === 0) {
+          // New day - reset all states to allow fresh check-in
+          this.isCheckedIn.set(false);
+          this.checkInTime.set('');
+          this.workingHours.set('00:00:00');
+          this.lastAction.set(null);
+          this.currentTimeLog.set(null);
+          return;
+        }
+
+        // Check if user is currently checked in (status: true and has active timelog)
+        if (employee.status && employee.timelog.length > 0) {
+          const activeTimeLog = employee.timelog.find(log => !log.checkout);
+          
+          if (activeTimeLog) {
+            this.currentTimeLog.set(activeTimeLog);
+            this.isCheckedIn.set(true);
+            
+            // Set check-in time
+            const checkInDate = new Date(activeTimeLog.checkin);
+            const timeString = checkInDate.toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            });
+            this.checkInTime.set(timeString);
+            
+            // Start working time counter
+            this.startWorkingTimeCounter(checkInDate);
+          }
+        } else if (!employee.status && employee.timelog.length > 0) {
+          // Employee has completed work for the day (checked out)
+          const lastTimeLog = employee.timelog[employee.timelog.length - 1];
+          if (lastTimeLog.checkout) {
+            const checkOutDate = new Date(lastTimeLog.checkout);
+            const timeString = checkOutDate.toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            });
+            
+            this.lastAction.set({
+              type: 'Check-out',
+              time: timeString
+            });
+            
+            // Set working hours to show completed time
+            this.workingHours.set(lastTimeLog.totalhours + ':00');
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load employee status:', error);
+    }
+  }
+
+  private startWorkingTimeCounter(checkInDate: Date): void {
+    if (this.workingTimeInterval) {
+      clearInterval(this.workingTimeInterval);
+    }
+
+    this.workingTimeInterval = window.setInterval(() => {
+      if (this.isCheckedIn()) {
+        const now = new Date();
+        const diff = now.getTime() - checkInDate.getTime();
+        
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        this.workingHours.set(timeString);
+      }
+    }, 1000);
+  }
+
+  private stopWorkingTimeCounter(): void {
+    if (this.workingTimeInterval) {
+      clearInterval(this.workingTimeInterval);
+      this.workingTimeInterval = null;
+    }
+  }
+}
