@@ -6,6 +6,7 @@ import {
   ReusableButtonComponent,
   ToastService 
 } from '../../../../shared/components';
+import { AuthService } from '../../../../core/services/auth.service';
 
 interface TimeLog {
   date: string;
@@ -133,10 +134,21 @@ interface CheckinResponse {
 export class EmployeeCheckinComponent implements OnInit, OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly toastService = inject(ToastService);
+  private readonly authService = inject(AuthService);
 
   // API configuration
   private readonly API_BASE_URL = 'https://attendance-three-lemon.vercel.app';
-  private readonly EMPLOYEE_ID = '6880defb04cb9eaa25acbc06'; // This should come from auth service in real app
+
+  // Get current employee ID from auth service
+  private get EMPLOYEE_ID(): string {
+    const currentUser = this.authService.user();
+    if (!currentUser?.id) {
+      console.error('No authenticated user found');
+      this.toastService.error('Please log in again');
+      throw new Error('No authenticated user');
+    }
+    return currentUser.id;
+  }
 
   // Component state signals
   readonly isLoading = signal(false);
@@ -150,6 +162,12 @@ export class EmployeeCheckinComponent implements OnInit, OnDestroy {
   private workingTimeInterval: number | null = null;
 
   ngOnInit(): void {
+    // Check if user is authenticated before loading status
+    if (!this.authService.isAuthenticated()) {
+      this.toastService.error('Please log in to access this feature');
+      return;
+    }
+    
     this.loadEmployeeStatus();
   }
 
@@ -163,9 +181,10 @@ export class EmployeeCheckinComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
 
     try {
+      const employeeId = this.EMPLOYEE_ID;
       const response = await this.http.post<CheckinResponse>(
         `${this.API_BASE_URL}/checkin`,
-        { id: this.EMPLOYEE_ID }
+        { id: employeeId }
       ).toPromise();
 
       if (response && response.timelog.length > 0) {
@@ -192,14 +211,19 @@ export class EmployeeCheckinComponent implements OnInit, OnDestroy {
         
         this.toastService.success(`${response.message} at ${timeString}`);
       }
-    } catch (error: any) {
-      console.error('Check-in failed:', error);
+    } catch (authError: any) {
+      if (authError.message === 'No authenticated user') {
+        // User needs to log in again
+        return;
+      }
+      
+      console.error('Check-in failed:', authError);
       
       // Handle specific API error messages
-      if (error.status === 400 && error.error?.message === 'Already checked in today') {
+      if (authError.status === 400 && authError.error?.message === 'Already checked in today') {
         this.toastService.error('You have already completed your work for today. Check-in is not allowed after checkout.');
-      } else if (error.error?.message) {
-        this.toastService.error(error.error.message);
+      } else if (authError.error?.message) {
+        this.toastService.error(authError.error.message);
       } else {
         this.toastService.error('Check-in failed. Please try again.');
       }
@@ -214,9 +238,10 @@ export class EmployeeCheckinComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
 
     try {
+      const employeeId = this.EMPLOYEE_ID;
       const response = await this.http.post<CheckinResponse>(
         `${this.API_BASE_URL}/checkout`,
-        { id: this.EMPLOYEE_ID }
+        { id: employeeId }
       ).toPromise();
 
       if (response) {
@@ -246,14 +271,19 @@ export class EmployeeCheckinComponent implements OnInit, OnDestroy {
         this.workingHours.set('00:00:00');
         this.currentTimeLog.set(null);
       }
-    } catch (error: any) {
-      console.error('Check-out failed:', error);
+    } catch (authError: any) {
+      if (authError.message === 'No authenticated user') {
+        // User needs to log in again
+        return;
+      }
+      
+      console.error('Check-out failed:', authError);
       
       // Handle specific API error messages
-      if (error.status === 403 && error.error?.message) {
-        this.toastService.error(error.error.message);
-      } else if (error.error?.message) {
-        this.toastService.error(error.error.message);
+      if (authError.status === 403 && authError.error?.message) {
+        this.toastService.error(authError.error.message);
+      } else if (authError.error?.message) {
+        this.toastService.error(authError.error.message);
       } else {
         this.toastService.error('Check-out failed. Please try again.');
       }
@@ -264,8 +294,9 @@ export class EmployeeCheckinComponent implements OnInit, OnDestroy {
 
   private async loadEmployeeStatus(): Promise<void> {
     try {
+      const employeeId = this.EMPLOYEE_ID;
       const employee = await this.http.get<Employee>(
-        `${this.API_BASE_URL}/view/${this.EMPLOYEE_ID}`
+        `${this.API_BASE_URL}/view/${employeeId}`
       ).toPromise();
 
       if (employee) {
@@ -321,8 +352,12 @@ export class EmployeeCheckinComponent implements OnInit, OnDestroy {
           }
         }
       }
-    } catch (error) {
-      console.error('Failed to load employee status:', error);
+    } catch (authError) {
+      if (authError instanceof Error && authError.message === 'No authenticated user') {
+        // User needs to log in again
+        return;
+      }
+      console.error('Failed to load employee status:', authError);
     }
   }
 
