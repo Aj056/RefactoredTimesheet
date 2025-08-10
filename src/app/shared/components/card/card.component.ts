@@ -8,10 +8,10 @@ import { CommonModule } from '@angular/common';
   template: `
     <div [class]="cardClasses()">
       @if (header()) {
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">{{ header() }}</h3>
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white transition-colors">{{ header() }}</h3>
           @if (subtitle()) {
-            <p class="mt-1 text-sm text-gray-500">{{ subtitle() }}</p>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 transition-colors">{{ subtitle() }}</p>
           }
         </div>
       }
@@ -21,7 +21,7 @@ import { CommonModule } from '@angular/common';
       </div>
       
       @if (showFooter()) {
-        <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 transition-colors">
           <ng-content select="[slot=footer]"></ng-content>
         </div>
       }
@@ -43,7 +43,7 @@ export class CardComponent {
   readonly showFooter = input<boolean>(false); // Simple boolean input to control footer visibility
   
   cardClasses(): string {
-    const baseClasses = 'bg-white overflow-hidden';
+    const baseClasses = 'bg-white dark:bg-gray-800 overflow-hidden transition-colors';
     
     const shadowClasses = {
       none: '',
@@ -53,7 +53,7 @@ export class CardComponent {
     };
     
     const roundedClass = this.rounded() ? 'rounded-lg' : '';
-    const borderClass = this.border() ? 'border border-gray-200' : '';
+    const borderClass = this.border() ? 'border border-gray-200 dark:border-gray-700' : '';
     const hoverClass = this.hoverable() ? 'hover:shadow-lg transition-shadow duration-200 cursor-pointer' : '';
     
     return [

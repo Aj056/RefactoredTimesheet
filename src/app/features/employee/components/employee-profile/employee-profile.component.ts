@@ -77,10 +77,10 @@ import { ModalService } from '../../../../shared/services/modal.service';
                   <h2 class="text-2xl font-bold text-gray-900 dark:text-white transition-colors">
                     {{ currentEmployee()!.employeeName }}
                   </h2>
-                  <p class="text-gray-600 dark:text-gray-400 transition-colors">
+                  <p class="text-gray-600 dark:text-gray-300 transition-colors">
                     {{ currentEmployee()!.designation }}
                   </p>
-                  <p class="text-sm text-gray-500 dark:text-gray-500 transition-colors">
+                  <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors">
                     {{ currentEmployee()!.department }}
                   </p>
                   <div class="mt-2">
@@ -239,11 +239,11 @@ import { ModalService } from '../../../../shared/services/modal.service';
     }
     
     .profile-label {
-      @apply block text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors;
+      @apply block text-sm font-medium text-gray-500 dark:text-gray-300 transition-colors;
     }
     
     .profile-value {
-      @apply text-sm text-gray-900 dark:text-white transition-colors;
+      @apply text-sm text-gray-900 dark:text-gray-100 font-medium transition-colors;
     }
   `]
 })
