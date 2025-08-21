@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard, loginGuard } from './core/guards/auth.guard';
 import { adminGuard, employeeGuard } from './core/guards/role.guard';
+import { EMPLOYEE_ROUTES } from './features/employee/employee.routes';
 
 export const routes: Routes = [
   {
@@ -14,19 +15,14 @@ export const routes: Routes = [
     canActivate: [loginGuard]
   },
   {
-    path: 'dashboard',
-    loadComponent: () => import('./features/employee/dashboard/dashboard.component').then(m => m.DashboardComponent),
+    path: 'employee',
+    children: EMPLOYEE_ROUTES,
     canActivate: [authGuard, employeeGuard]
   },
   {
-    path: 'employee/profile',
-    loadComponent: () => import('./features/employee/components/employee-profile/employee-profile.component').then(m => m.EmployeeProfileComponent),
-    canActivate: [authGuard]
-  },
-  {
-    path: 'employee/profile/edit',
-    loadComponent: () => import('./features/employee/components/edit-employee-profile/edit-employee-profile.component').then(m => m.EditEmployeeProfileComponent),
-    canActivate: [authGuard]
+    path: 'dashboard',
+    loadComponent: () => import('./features/employee/dashboard/dashboard.component').then(m => m.DashboardComponent),
+    canActivate: [authGuard, employeeGuard]
   },
   {
     path: 'admin',

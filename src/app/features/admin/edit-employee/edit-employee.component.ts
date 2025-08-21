@@ -106,7 +106,6 @@ export class EditEmployeeComponent implements OnInit {
         panNumber: formData.panNumber,
         phone: formData.phone,
         resourceType: formData.resourceType || '',
-        status: formData.status,
         uanNumber: formData.uanNumber || '',
         workLocation: formData.workLocation,
         password: formData.password

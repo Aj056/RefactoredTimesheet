@@ -25,5 +25,11 @@ export const EMPLOYEE_ROUTES: Routes = [
     loadComponent: () => import('./components/edit-employee-profile/edit-employee-profile.component')
       .then(m => m.EditEmployeeProfileComponent),
     canActivate: [authGuard, employeeGuard]
+  },
+  {
+    path:'view-reports',
+    loadComponent: () => import('./components/employee-reports/employee-reports.component')
+      .then(m => m.EmployeeReportsComponent),
+    canActivate: [authGuard, employeeGuard]
   }
 ];

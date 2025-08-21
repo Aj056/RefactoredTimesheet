@@ -57,7 +57,6 @@ export interface CreateEmployeeRequest {
   readonly phone: string;
   readonly resourceType: string;
   readonly role: 'admin' | 'employee';
-  readonly status: boolean;
   readonly uanNumber: string;
   readonly workLocation: string;
 }
@@ -76,7 +75,6 @@ export interface UpdateEmployeeRequest {
   readonly panNumber: string;
   readonly phone: string;
   readonly resourceType: string;
-  readonly status: boolean;
   readonly uanNumber: string;
   readonly workLocation: string;
   readonly password: string;
@@ -177,7 +175,7 @@ export class EmployeeService {
       if (response) {
         // Reload employees to get updated list
         await this.loadEmployees();
-        this.toastService.show('Employee created successfully!', 'success');
+        this.toastService.show(`${response.msg}`);
         return true;
       }
       
@@ -249,6 +247,35 @@ export class EmployeeService {
       return false;
     } finally {
       this._isLoading.set(false);
+    }
+  }
+  
+  async getEmployeeTimesheet(id: string, month: number, year: number): Promise<any> {
+    try {
+      const payload = {
+        id: id,
+        month: month, // Ensure this is a number, not string
+        year: year
+      };
+
+      console.log('Fetching timesheet data with payload:', payload);
+      console.log('Payload types:', { 
+        id: typeof payload.id, 
+        month: typeof payload.month, 
+        year: typeof payload.year 
+      });
+
+      const response = await firstValueFrom(
+        this.http.post<any>(`${this.API_BASE}/filterby`, payload)
+      );
+      
+      console.log('Timesheet API Response:', response);
+      return response;
+    } catch (error) {
+      console.error('Failed to get employee timesheet:', error);
+      this._error.set('Failed to load timesheet data. Please try again.');
+      this.toastService.error('Failed to load timesheet data');
+      return null;
     }
   }
   

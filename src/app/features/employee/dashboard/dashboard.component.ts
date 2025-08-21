@@ -296,7 +296,20 @@ export class DashboardComponent implements OnInit {
   }
 
   viewReports(): void {
-    this.toastService.info('Reports feature coming soon!');
+    console.log('Navigating to reports...');
+    // Navigate to the employee reports route
+    this.router.navigate(['/employee/view-reports']).then(
+      (success) => {
+        console.log('Navigation result:', success);
+        if (!success) {
+          console.error('Navigation failed - component may not exist');
+          this.toastService.error('Reports component not found.');
+        }
+      }
+    ).catch((error) => {
+      console.error('Navigation error:', error);
+      this.toastService.error('Failed to navigate to reports.');
+    });
   }
 
   navigateToProfile(): void {

@@ -118,6 +118,12 @@ export class NavigationDropdownComponent {
       variant: 'primary'
     },
     {
+      label: 'PDF Generation',
+      icon: 'fas fa-file-pdf',
+      action: () => this.openPdfGeneration(),
+      variant: 'primary'
+    },
+    {
       label: 'Refresh Data',
       icon: 'fas fa-sync-alt',
       action: () => this.refreshData()
@@ -175,5 +181,8 @@ export class NavigationDropdownComponent {
 
   private async logout(): Promise<void> {
     await this.navigationService.logout();
+  }
+  private openPdfGeneration(): void {
+    window.open('https://pf-generation-willware.vercel.app/', '_blank');
   }
 }

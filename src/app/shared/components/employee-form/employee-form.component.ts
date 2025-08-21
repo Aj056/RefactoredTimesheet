@@ -14,7 +14,6 @@ export interface EmployeeFormData {
   joinDate: string;
   bankAccount: string;
   panNumber: string;
-  status: boolean;
   address: string;
   uanNumber?: string;
   esiNumber?: string;
@@ -175,16 +174,6 @@ export interface EmployeeFormData {
             </select>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select
-              formControlName="status"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-              <option [value]="true">Active</option>
-              <option [value]="false">Inactive</option>
-            </select>
-          </div>
-
           <!-- Financial Information Section -->
           <div class="md:col-span-2 mt-6">
             <h3 class="text-lg font-medium text-gray-900 mb-4">Financial Information</h3>
@@ -297,7 +286,6 @@ export class EmployeeFormComponent implements OnInit {
     workLocation: ['', [Validators.required]],
     joinDate: ['', [Validators.required]],
     role: ['employee', [Validators.required]],
-    status: [true, [Validators.required]],
     bankAccount: ['', [Validators.required]],
     panNumber: ['', [Validators.required]],
     uanNumber: [''],
@@ -344,7 +332,6 @@ export class EmployeeFormComponent implements OnInit {
       workLocation: employee.workLocation,
       joinDate: employee.joinDate,
       role: employee.role,
-      status: employee.status,
       bankAccount: employee.bankAccount,
       panNumber: employee.panNumber,
       uanNumber: employee.uanNumber,

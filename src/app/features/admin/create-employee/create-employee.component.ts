@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { EmployeeService, CreateEmployeeRequest } from '../../../core/services/employee.service';
+import { ToastService } from '../../../shared/components';
 import { 
   EmployeeFormComponent, 
   type EmployeeFormData,
@@ -37,7 +38,7 @@ import {
 export class CreateEmployeeComponent {
   private readonly router = inject(Router);
   private readonly employeeService = inject(EmployeeService);
-
+  private readonly toastService = inject(ToastService);
   readonly isSubmitting = signal(false);
 
   readonly headerActions: PageHeaderAction[] = [
@@ -66,7 +67,6 @@ export class CreateEmployeeComponent {
         panNumber: formData.panNumber,
         phone: formData.phone,
         resourceType: formData.resourceType || '',
-        status: formData.status,
         uanNumber: formData.uanNumber || '',
         workLocation: formData.workLocation,
         password: formData.password
@@ -74,6 +74,7 @@ export class CreateEmployeeComponent {
 
       const success = await this.employeeService.createEmployee(createData);
       if (success) {
+
         await this.router.navigate(['/admin']);
       }
     } finally {

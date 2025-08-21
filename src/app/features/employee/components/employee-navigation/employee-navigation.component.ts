@@ -170,6 +170,10 @@ export class EmployeeNavigationComponent {
     this.router.navigate(['/employee/profile']);
   }
 
+  private openPdfGeneration(): void {
+     window.open()
+  }
+
   private logout(): void {
     this.modalService.confirmLogout(() => {
       this.authService.logout();

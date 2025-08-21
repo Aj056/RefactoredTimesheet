@@ -1,9 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { ThemeToggleComponent } from '../../../shared/components';
+import { SIGNAL } from '@angular/core/primitives/signals';
 
 @Component({
   selector: 'app-login',
@@ -121,7 +122,7 @@ import { ThemeToggleComponent } from '../../../shared/components';
             </button>
 
             <!-- Error Message -->
-            @if (errorMessage()) {
+            @if (errorMessage() && setErrorTime() ) {
               <div class="rounded-md bg-red-50 p-4">
                 <div class="flex">
                   <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
@@ -148,10 +149,11 @@ export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
-
+ setErrorTime = signal(true);
   // Signals for reactive state
   readonly isLoading = this.authService.isLoading;
   readonly errorMessage = this.authService.error;
+  
   
   // Local state
   passwordVisible = false;
@@ -179,6 +181,9 @@ export class LoginComponent {
       if (!success) {
         // Error message is handled by AuthService
         console.log('Login failed');
+        setTimeout(() =>{
+          this.setErrorTime.set(false);
+        },3000)
       }
       // Success navigation is handled by AuthService
     } catch (error) {
