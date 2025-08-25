@@ -225,7 +225,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.loadEmployeeData();
   }
-
   private async loadEmployeeData(): Promise<void> {
     try {
       this.isLoading.set(true);

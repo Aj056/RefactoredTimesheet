@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { 
   CardComponent, 
-  ReusableButtonComponent,
-  ToastService 
+  ReusableButtonComponent, 
 } from '../../../../shared/components';
 
 interface Quote {
@@ -93,7 +92,7 @@ interface Quote {
 })
 export class MotivationalQuotesComponent implements OnInit {
   private readonly http = inject(HttpClient);
-  private readonly toastService = inject(ToastService);
+
 
   readonly isLoading = signal(false);
   readonly currentQuote = signal<Quote | null>(null);
@@ -143,32 +142,30 @@ export class MotivationalQuotesComponent implements OnInit {
     this.loadQuote();
   }
 
-  private async loadQuote(): Promise<void> {
+  private loadQuote() {
     this.isLoading.set(true);
     this.error.set(false);
 
-    try {
-      // Using realinspire.live API - returns array of quotes
-      const response = await this.http.get<Array<{content: string, author: string}>>(
-        'https://api.realinspire.live/v1/quotes/random?limit=1'
-      ).toPromise();
+    // Using thequoteshub API - returns single quote object
+    const response = this.http.get<any>(
+      'https://thequoteshub.com/api/random-quote'
+    ).subscribe({
+      next: (data) => {
+         this.isLoading.set(false);
+          this.currentQuote.set(data);
+          this.useFallbackQuote()
 
-      if (response && response.length > 0) {
-        this.currentQuote.set({
-          content: response[0].content,
-          author: response[0].author
-        });
-      } else {
-        throw new Error('No quote received');
-      }
-    } catch (error) {
-      console.warn('Failed to fetch quote from API, using fallback:', error);
-      this.useFallbackQuote();
-    } finally {
-      this.isLoading.set(false);
-    }
+        },
+        error: () => {
+           this.isLoading.set(false);
+          this.error.set(true);
+          this.useFallbackQuote()
+        },
+        complete: () => {
+          this.isLoading.set(false);
+        }
+      });
   }
-
   private useFallbackQuote(): void {
     const randomIndex = Math.floor(Math.random() * this.fallbackQuotes.length);
     this.currentQuote.set(this.fallbackQuotes[randomIndex]);

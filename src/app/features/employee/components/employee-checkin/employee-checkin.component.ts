@@ -8,7 +8,6 @@ import {
 } from '../../../../shared/components';
 import { AuthService } from '../../../../core/services/auth.service';
 import { LocationService } from '../../../../core/services/location.service';
-
 interface TimeLog {
   date: string;
   checkin: string;
@@ -96,38 +95,13 @@ interface CheckinResponse {
               (click)="checkOut()"
               class="min-w-[140px]" />
           } @else {
-            <!-- Location Verification Status -->
-            @if (locationService.locationError()) {
-              <div class="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/30 rounded-lg">
-                <div class="flex items-center text-amber-700 dark:text-amber-300 text-sm">
-                  <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 15c-.77.833.192 2.5 1.732 2.5z"/>
-                  </svg>
-                  <span>{{ locationService.locationError() }}</span>
-                </div>
-                <button 
-                  (click)="verifyLocation()" 
-                  [disabled]="locationService.isCheckingLocation()"
-                  class="mt-2 text-xs bg-amber-100 dark:bg-amber-800/20 text-amber-800 dark:text-amber-200 px-2 py-1 rounded hover:bg-amber-200 dark:hover:bg-amber-700/30 transition-colors disabled:opacity-50">
-                  @if (locationService.isCheckingLocation()) {
-                    <span class="flex items-center">
-                      <div class="animate-spin rounded-full h-3 w-3 border border-amber-600 border-t-transparent mr-1"></div>
-                      Checking...
-                    </span>
-                  } @else {
-                    Try Again
-                  }
-                </button>
-              </div>
-            }
-
             <!-- Check In Button -->
             <app-reusable-button
               text="Check In"
               variant="primary"
               size="lg"
               icon="login"
-              [disabled]="isLoading() || (lastAction()?.type === 'Check-out') || !locationService.isInOfficeNetwork() || locationService.isCheckingLocation()"
+              [disabled]="isLoading() || (lastAction()?.type === 'Check-out' || !locationService.isLocationEnabled())"
               (click)="checkIn()"
               class="min-w-[140px]" />
               
@@ -138,7 +112,7 @@ interface CheckinResponse {
                   <div class="animate-spin rounded-full h-3 w-3 border border-blue-600 border-t-transparent mr-2"></div>
                   Verifying office location...
                 </div>
-              } @else if (locationService.isInOfficeNetwork()) {
+              } @else if (locationService.isLocationEnabled()) {
                 <div class="flex items-center justify-center text-green-600 dark:text-green-400 text-xs">
                   <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -186,8 +160,7 @@ export class EmployeeCheckinComponent implements OnInit, OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly toastService = inject(ToastService);
   private readonly authService = inject(AuthService);
-  readonly locationService = inject(LocationService);
-
+  locationService = inject(LocationService);
   // API configuration
   private readonly API_BASE_URL = 'https://attendance-three-lemon.vercel.app';
 
@@ -219,35 +192,16 @@ export class EmployeeCheckinComponent implements OnInit, OnDestroy {
       this.toastService.error('Please log in to access this feature');
       return;
     }
-    
+    this.locationService.loadGeolocation();
     this.loadEmployeeStatus();
-    // Verify office location on component load
-    this.verifyLocation();
   }
 
   ngOnDestroy(): void {
     this.stopWorkingTimeCounter();
   }
 
-  async verifyLocation(): Promise<void> {
-    try {
-      await this.locationService.checkOfficeNetwork();
-    } catch (error) {
-      console.error('Location verification failed:', error);
-      this.toastService.error('Unable to verify office location');
-    }
-  }
-
   async checkIn(): Promise<void> {
     if (this.isCheckedIn() || this.isLoading()) return;
-
-    // Verify location before check-in
-    const isInOffice = await this.locationService.checkOfficeNetwork();
-    if (!isInOffice) {
-      this.toastService.error('You must be connected to office WiFi to check in');
-      return;
-    }
-
     this.isLoading.set(true);
 
     try {
