@@ -21,10 +21,10 @@ export interface OfficeLocationConfig {
 
 export const OFFICE_LOCATIONS: OfficeLocationConfig[] = [
   {
-    name: 'Headquarters - Mumbai',
+    name: 'Main Office',
     allowedIPs: [
       // Replace with your actual office public IP addresses
-      '203.192.XXX.XXX', // Primary office IP
+      '194.180.86.40',   // Your actual office IP
       '117.247.XXX.XXX'  // Backup/secondary IP
     ],
     allowedNetworks: [
@@ -33,8 +33,8 @@ export const OFFICE_LOCATIONS: OfficeLocationConfig[] = [
       '172.16.0.0/12'     // Additional subnets
     ],
     coordinates: {
-      latitude: 19.0760,  // Mumbai coordinates (replace with actual)
-      longitude: 72.8777,
+      latitude: 11.53769,    // Your actual office coordinates
+      longitude: 79.3296565,
       radius: 100 // 100 meters radius
     },
     timezone: 'Asia/Kolkata',
