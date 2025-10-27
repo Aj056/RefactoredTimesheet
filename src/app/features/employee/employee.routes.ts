@@ -31,5 +31,11 @@ export const EMPLOYEE_ROUTES: Routes = [
     loadComponent: () => import('./components/employee-reports/employee-reports.component')
       .then(m => m.EmployeeReportsComponent),
     canActivate: [authGuard, employeeGuard]
+  },
+  {
+    path:'view-payslip',
+    loadComponent: () => import('./components/employee-payslip/employee-payslip.component')
+      .then(m => m.EmployeePayslipComponent),
+    canActivate: [authGuard, employeeGuard]
   }
 ];

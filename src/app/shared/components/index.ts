@@ -17,6 +17,12 @@ export { TableComponent, type TableColumn, type TableAction } from './table/tabl
 
 // Form Components
 export { EmployeeFormComponent, type EmployeeFormData } from './employee-form/employee-form.component';
+export { DatePickerComponent } from './date-picker/date-picker.component';
+export { MonthYearPickerComponent, type MonthYearValue } from './month-year-picker/month-year-picker.component';
+
+// Data Components
+export { TimesheetComponent, type TimesheetRecord, type TimesheetSummary, type TimesheetData } from './timesheet/timesheet.component';
+
 
 // Modal Components
 export { DeleteConfirmationComponent, type DeleteConfirmationData } from './delete-confirmation/delete-confirmation.component';
@@ -35,7 +41,11 @@ import { TableComponent } from './table/table.component';
 import { ToastComponent } from './toast/toast.component';
 import { ThemeToggleComponent } from './theme-toggle/theme-toggle.component';
 import { EmployeeFormComponent } from './employee-form/employee-form.component';
+import { DatePickerComponent } from './date-picker/date-picker.component';
+import { MonthYearPickerComponent } from './month-year-picker/month-year-picker.component';
+import { TimesheetComponent } from './timesheet/timesheet.component';
 import { DeleteConfirmationComponent } from './delete-confirmation/delete-confirmation.component';
+
 
 // All reusable components array (NO DUPLICATES)
 export const SHARED_COMPONENTS = [
@@ -48,7 +58,10 @@ export const SHARED_COMPONENTS = [
   ToastComponent,
   ThemeToggleComponent,
   EmployeeFormComponent,
-  DeleteConfirmationComponent
+  DatePickerComponent,
+  MonthYearPickerComponent,
+  TimesheetComponent,
+  DeleteConfirmationComponent,
 ] as const;
 
 // USAGE GUIDELINES:
