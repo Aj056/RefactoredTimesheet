@@ -14,11 +14,6 @@
   }
 }
 
-.company-name {
-  color: #1f2937;
-  border-bottom: 2px solid #e5e7eb;
-  padding-bottom: 10px;
-}
 
 .company-address {
   font-size: 14px;
@@ -126,7 +121,10 @@
     display: none !important;
   }
 }
-
+ .pdf-generation-container{
+    min-width: 1130px;
+    background: black;
+ }
 // Additional clean styles for PDF generation with white background
 .pdf-generation {
   background: white !important;

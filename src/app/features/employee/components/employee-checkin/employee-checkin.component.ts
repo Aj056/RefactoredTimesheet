@@ -7,7 +7,6 @@ import {
   ToastService 
 } from '../../../../shared/components';
 import { AuthService } from '../../../../core/services/auth.service';
-import { LocationService } from '../../../../core/services/location.service';
 interface TimeLog {
   date: string;
   checkin: string;
@@ -101,45 +100,9 @@ interface CheckinResponse {
               variant="primary"
               size="lg"
               icon="login"
-              [disabled]="isLoading() || (lastAction()?.type === 'Check-out' || !locationService.isLocationEnabled())"
+              [disabled]="isLoading() || lastAction()?.type === 'Check-out'"
               (click)="checkIn()"
               class="min-w-[140px]" />
-              
-            <!-- Location Status Indicator -->
-            <div class="mt-3 text-center">
-              @if (locationService.isCheckingLocation()) {
-                <div class="flex items-center justify-center text-blue-600 dark:text-blue-400 text-xs">
-                  <div class="animate-spin rounded-full h-3 w-3 border border-blue-600 border-t-transparent mr-2"></div>
-                  {{ locationService.locationStatus() }}
-                </div>
-              } @else if (locationService.isLocationEnabled()) {
-                <div class="flex items-center justify-center text-green-600 dark:text-green-400 text-xs">
-                  <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  {{ locationService.locationStatus() }}
-                </div>
-                @if (locationService.currentOffice()) {
-                  <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                    Office: {{ locationService.currentOffice() }}
-                  </div>
-                }
-              } @else {
-                <div class="flex items-center justify-center text-red-600 dark:text-red-400 text-xs">
-                  <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                  </svg>
-                  {{ locationService.locationStatus() || 'Not in office location' }}
-                </div>
-                <div class="mt-2">
-                  <button 
-                    (click)="recheckLocation()" 
-                    class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-2 py-1 rounded hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors">
-                    Recheck Location
-                  </button>
-                </div>
-              }
-            </div>
           }
         </div>
 
@@ -172,7 +135,6 @@ export class EmployeeCheckinComponent implements OnInit, OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly toastService = inject(ToastService);
   private readonly authService = inject(AuthService);
-  locationService = inject(LocationService);
   // API configuration
   private readonly API_BASE_URL = 'https://attendance-three-lemon.vercel.app';
 
@@ -204,25 +166,6 @@ export class EmployeeCheckinComponent implements OnInit, OnDestroy {
       this.toastService.error('Please log in to access this feature');
       return;
     }
-    this.checkLocationAndLoadStatus();
-  }
-
-  private async checkLocationAndLoadStatus(): Promise<void> {
-    try {
-      const locationResult = await this.locationService.checkOfficeLocation();
-      
-      if (locationResult.isInOffice) {
-        this.toastService.success(locationResult.message);
-      } else {
-        this.toastService.warning(locationResult.message);
-      }
-      
-      console.log('Location check result:', locationResult);
-    } catch (error) {
-      console.error('Location check failed:', error);
-      this.toastService.error('Unable to verify office location');
-    }
-    
     this.loadEmployeeStatus();
   }
 
@@ -442,20 +385,5 @@ export class EmployeeCheckinComponent implements OnInit, OnDestroy {
     }
   }
 
-  async recheckLocation(): Promise<void> {
-    try {
-      const locationResult = await this.locationService.checkOfficeLocation();
-      
-      if (locationResult.isInOffice) {
-        this.toastService.success(locationResult.message);
-      } else {
-        this.toastService.warning(locationResult.message);
-      }
-      
-      console.log('Location recheck result:', locationResult);
-    } catch (error) {
-      console.error('Location recheck failed:', error);
-      this.toastService.error('Unable to verify office location');
-    }
-  }
+
 }

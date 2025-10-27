@@ -7,8 +7,10 @@ import {
 } from '../../../../shared/components';
 
 interface Quote {
-  content: string;
-  author: string;
+  Quote: string;
+  Author: string;
+  Tags: string;
+  ID: number;
 }
 
 @Component({
@@ -34,13 +36,15 @@ interface Quote {
             <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white transition-colors">Daily Motivation</h3>
           </div>
           
-          <app-reusable-button
-            text="New Quote"
-            variant="secondary"
-            size="sm"
-            icon="refresh"
-            [disabled]="isLoading()"
-            (click)="refreshQuote()" />
+          <div class="flex gap-2">
+            <app-reusable-button
+              text="New Quote"
+              variant="secondary"
+              size="sm"
+              icon="refresh"
+              [disabled]="isLoading()"
+              (click)="refreshQuote()" />
+          </div>
         </div>
 
         @if (isLoading()) {
@@ -55,16 +59,28 @@ interface Quote {
             
             <!-- Quote content -->
             <blockquote class="text-gray-700 dark:text-gray-300 text-base sm:text-lg leading-relaxed italic -mt-2 sm:-mt-3 transition-colors">
-              {{ currentQuote()!.content }}
+              {{ currentQuote()!.Quote }}
             </blockquote>
             
             <!-- Author -->
             <div class="flex items-center space-x-2 pt-1 sm:pt-2">
               <div class="w-6 sm:w-8 h-px bg-gradient-to-r from-blue-500 to-purple-600"></div>
               <cite class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 not-italic transition-colors">
-                {{ currentQuote()!.author }}
+                {{ currentQuote()!.Author }}
               </cite>
             </div>
+            
+            <!-- Tags and ID (if available) -->
+            @if (currentQuote()!.Tags) {
+              <div class="text-xs text-gray-500 dark:text-gray-400 mt-2 transition-colors">
+                <div class="mb-1">Tags: {{ currentQuote()!.Tags }}</div>
+                <div class="text-gray-400 dark:text-gray-500">ID: {{ currentQuote()!.ID }}</div>
+              </div>
+            } @else {
+              <div class="text-xs text-gray-400 dark:text-gray-500 mt-2 transition-colors">
+                ID: {{ currentQuote()!.ID }}
+              </div>
+            }
           </div>
         } @else if (error()) {
           <div class="text-center py-4 sm:py-6">
@@ -93,48 +109,73 @@ interface Quote {
 export class MotivationalQuotesComponent implements OnInit {
   private readonly http = inject(HttpClient);
 
-
   readonly isLoading = signal(false);
   readonly currentQuote = signal<Quote | null>(null);
   readonly error = signal(false);
 
-  // Fallback quotes in case API fails
+  // Fallback quotes in case API fails - keeping only last 10 quotes
   private readonly fallbackQuotes: Quote[] = [
     {
-      content: "The way to get started is to quit talking and begin doing.",
-      author: "Walt Disney"
+      Quote: "The way to get started is to quit talking and begin doing.",
+      Author: "Walt Disney",
+      Tags: "motivation, action, success, leadership",
+      ID: 1
     },
     {
-      content: "Innovation distinguishes between a leader and a follower.",
-      author: "Steve Jobs"
+      Quote: "Innovation distinguishes between a leader and a follower.",
+      Author: "Steve Jobs",
+      Tags: "innovation, leadership, business, technology",
+      ID: 2
     },
     {
-      content: "Your work is going to fill a large part of your life, and the only way to be truly satisfied is to do what you believe is great work.",
-      author: "Steve Jobs"
+      Quote: "Your work is going to fill a large part of your life, and the only way to be truly satisfied is to do what you believe is great work.",
+      Author: "Steve Jobs",
+      Tags: "work, satisfaction, passion, career",
+      ID: 3
     },
     {
-      content: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-      author: "Winston Churchill"
+      Quote: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+      Author: "Winston Churchill",
+      Tags: "success, failure, courage, persistence",
+      ID: 4
     },
     {
-      content: "The only way to do great work is to love what you do.",
-      author: "Steve Jobs"
+      Quote: "The only way to do great work is to love what you do.",
+      Author: "Steve Jobs",
+      Tags: "work, passion, love, greatness",
+      ID: 5
     },
     {
-      content: "Believe you can and you're halfway there.",
-      author: "Theodore Roosevelt"
+      Quote: "Believe you can and you're halfway there.",
+      Author: "Theodore Roosevelt",
+      Tags: "belief, confidence, motivation, success",
+      ID: 6
     },
     {
-      content: "Don't watch the clock; do what it does. Keep going.",
-      author: "Sam Levenson"
+      Quote: "Don't watch the clock; do what it does. Keep going.",
+      Author: "Sam Levenson",
+      Tags: "persistence, time, motivation, work",
+      ID: 7
     },
     {
-      content: "The future depends on what you do today.",
-      author: "Mahatma Gandhi"
+      Quote: "The future depends on what you do today.",
+      Author: "Mahatma Gandhi",
+      Tags: "future, action, responsibility, today",
+      ID: 8
+    },
+    {
+      Quote: "Every great soul was inspired by another great soul.",
+      Author: "Lailah Gifty Akita",
+      Tags: "believe, deeds, encouragement, good-thoughts, great, great-expectations, great-men, inspirational, inspired, life, motivation, sharing-life, soul, spiritual-life, wisdom-of-lailah-gifty-akita, wise",
+      ID: 9
+    },
+    {
+      Quote: "Excellence is not a skill, it's an attitude.",
+      Author: "Ralph Marston",
+      Tags: "excellence, attitude, mindset, success, quality",
+      ID: 10
     }
-  ];
-
-  ngOnInit(): void {
+  ];  ngOnInit(): void {
     this.loadQuote();
   }
 
@@ -142,33 +183,119 @@ export class MotivationalQuotesComponent implements OnInit {
     this.loadQuote();
   }
 
+  // Method to test API response directly
+  testApiResponse(): void {
+    console.log('Testing thequoteshub.com API...');
+    
+    this.http.get('https://thequoteshub.com/api/random', {
+      responseType: 'text'
+    }).subscribe({
+      next: (response) => {
+        console.log('Raw API Response:');
+        console.log('Type:', typeof response);
+        console.log('Content:', response);
+        
+        if (response.includes('<html>')) {
+          console.log('❌ Response is HTML, not JSON');
+        } else {
+          try {
+            const parsed = JSON.parse(response);
+            console.log('✅ Parsed JSON:', parsed);
+          } catch (e) {
+            console.log('❌ Failed to parse as JSON:', e);
+          }
+        }
+      },
+      error: (error) => {
+        console.error('❌ API Error:', error);
+      }
+    });
+  }
+
   private loadQuote() {
     this.isLoading.set(true);
     this.error.set(false);
 
-    // Using thequoteshub API - returns single quote object
-    const response = this.http.get<any>(
-      'https://thequoteshub.com/api/random-quote'
-    ).subscribe({
-      next: (data) => {
-         this.isLoading.set(false);
-          this.currentQuote.set(data);
-          this.useFallbackQuote()
+    // Try different endpoints and approaches for thequoteshub.com
+    const endpoints = [
+      'https://thequoteshub.com/api/random-quote',
+      'https://thequoteshub.com/api/quotes/random', 
+      'https://thequoteshub.com/api/random',
+      // Try with CORS proxy if direct access fails
+      'https://cors-anywhere.herokuapp.com/https://thequoteshub.com/api/random'
+    ];
 
-        },
-        error: () => {
-           this.isLoading.set(false);
-          this.error.set(true);
-          this.useFallbackQuote()
-        },
-        complete: () => {
-          this.isLoading.set(false);
+    this.tryApiEndpoints(endpoints, 0);
+  }
+
+  private tryApiEndpoints(endpoints: string[], index: number) {
+    if (index >= endpoints.length) {
+      // All endpoints failed, use fallback
+      console.warn('All API endpoints failed, using fallback quotes');
+      this.useFallbackQuote();
+      return;
+    }
+
+    const endpoint = endpoints[index];
+    console.log(`Trying endpoint: ${endpoint}`);
+
+    this.http.get(endpoint, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      responseType: 'text' // Get as text first to check if it's HTML
+    }).subscribe({
+      next: (response) => {
+        console.log(`Response from ${endpoint}:`, response);
+        
+        // Check if response is HTML
+        if (response.includes('<html>') || response.includes('<!DOCTYPE')) {
+          console.warn(`${endpoint} returned HTML, trying next endpoint`);
+          this.tryApiEndpoints(endpoints, index + 1);
+          return;
         }
-      });
+
+        // Try to parse as JSON
+        try {
+          const jsonResponse = JSON.parse(response);
+          this.handleJsonResponse(jsonResponse);
+        } catch (parseError) {
+          console.error(`Failed to parse JSON from ${endpoint}:`, parseError);
+          this.tryApiEndpoints(endpoints, index + 1);
+        }
+      },
+      error: (error) => {
+        console.error(`Error from ${endpoint}:`, error);
+        this.tryApiEndpoints(endpoints, index + 1);
+      }
+    });
+  }
+
+  private handleJsonResponse(response: any) {
+    this.isLoading.set(false);
+    
+    // Try to extract quote data from various possible response formats
+    const quote: Quote = {
+      Quote: response.content || response.quote || response.text || response.Quote || '',
+      Author: response.author || response.authorName || response.Author || '',
+      Tags: response.tags || response.category || response.Tags || 'motivation, inspiration',
+      ID: response.id || response._id || response.ID || Math.floor(Math.random() * 100000)
+    };
+
+    if (quote.Quote && quote.Author) {
+      this.currentQuote.set(quote);
+      this.error.set(false);
+      console.log('Successfully loaded quote:', quote);
+    } else {
+      console.warn('Quote data incomplete:', quote);
+      this.useFallbackQuote();
+    }
   }
   private useFallbackQuote(): void {
     const randomIndex = Math.floor(Math.random() * this.fallbackQuotes.length);
     this.currentQuote.set(this.fallbackQuotes[randomIndex]);
     this.error.set(false);
+    this.isLoading.set(false);
   }
 }
