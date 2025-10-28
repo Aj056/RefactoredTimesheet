@@ -20,6 +20,18 @@ export interface EmployeeFormData {
   resourceType?: string;
   role: 'admin' | 'employee';
   password: string;
+  wwtId?: string;
+  basicPay?: number;
+  hra?: number;
+  others?: number;
+  incentive?: number;
+  staffAdvance?: number;
+  tds?: number;
+  esi?: number;
+  pf?: number;
+  alternativeBankAccount?: number;
+  alternativePhoneNumber?: number;
+  additionalFiled?: string;
 }
 
 @Component({
@@ -50,75 +62,75 @@ export interface EmployeeFormData {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Email <span class="text-red-500">*</span>
             </label>
             <input
               type="email"
               formControlName="email"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
               [class.border-red-300]="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched">
             @if (employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched) {
-              <p class="mt-1 text-sm text-red-600">Valid email is required</p>
+              <p class="mt-1 text-sm text-red-600 dark:text-red-400">Valid email is required</p>
             }
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Phone <span class="text-red-500">*</span>
             </label>
             <input
               type="tel"
               formControlName="phone"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
               [class.border-red-300]="employeeForm.get('phone')?.invalid && employeeForm.get('phone')?.touched">
             @if (employeeForm.get('phone')?.invalid && employeeForm.get('phone')?.touched) {
-              <p class="mt-1 text-sm text-red-600">Phone number is required</p>
+              <p class="mt-1 text-sm text-red-600 dark:text-red-400">Phone number is required</p>
             }
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Username <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
               formControlName="username"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
               [class.border-red-300]="employeeForm.get('username')?.invalid && employeeForm.get('username')?.touched">
             @if (employeeForm.get('username')?.invalid && employeeForm.get('username')?.touched) {
-              <p class="mt-1 text-sm text-red-600">Username is required</p>
+              <p class="mt-1 text-sm text-red-600 dark:text-red-400">Username is required</p>
             }
           </div>
 
           @if (mode() === 'create') {
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Password <span class="text-red-500">*</span>
               </label>
               <input
                 type="password"
                 formControlName="password"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"
                 [class.border-red-300]="employeeForm.get('password')?.invalid && employeeForm.get('password')?.touched">
               @if (employeeForm.get('password')?.invalid && employeeForm.get('password')?.touched) {
-                <p class="mt-1 text-sm text-red-600">Password is required</p>
+                <p class="mt-1 text-sm text-red-600 dark:text-red-400">Password is required</p>
               }
             </div>
           }
 
           <!-- Work Information Section -->
           <div class="md:col-span-2 mt-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Work Information</h3>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Work Information</h3>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Department <span class="text-red-500">*</span>
             </label>
             <select
               formControlName="department"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
               <option value="">Select Department</option>
               <option value="Software Development">Software Development</option>
               <option value="Recruitment Department">Recruitment Department</option>
@@ -129,23 +141,23 @@ export interface EmployeeFormData {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Designation <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
               formControlName="position"
               placeholder="e.g., Software Engineer, HR Manager"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Work Location <span class="text-red-500">*</span>
             </label>
             <select
               formControlName="workLocation"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
               <option value="">Select Location</option>
               <option value="Bangalore">Bangalore</option>
               <option value="Vridhachalam">Vridhachalam</option>
@@ -155,20 +167,20 @@ export interface EmployeeFormData {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Join Date <span class="text-red-500">*</span>
             </label>
             <input
               type="date"
               formControlName="joinDate"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role</label>
             <select
               formControlName="role"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
               <option value="employee">Employee</option>
               <option value="admin">Admin</option>
             </select>
@@ -176,63 +188,226 @@ export interface EmployeeFormData {
 
           <!-- Financial Information Section -->
           <div class="md:col-span-2 mt-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Financial Information</h3>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Financial Information</h3>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              WWt ID
+            </label>
+            <input
+              type="text"
+              formControlName="wwtId"
+              placeholder="Enter WWt ID"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Bank Account <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
               formControlName="bankAccount"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Alternative Bank Account
+            </label>
+            <input
+              type="number"
+              formControlName="alternativeBankAccount"
+              placeholder="Enter alternative bank account"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Alternative Phone Number
+            </label>
+            <input
+              type="number"
+              formControlName="alternativePhoneNumber"
+              placeholder="Enter alternative phone number"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               PAN Number <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
               formControlName="panNumber"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">UAN Number</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">UAN Number</label>
             <input
               type="text"
               formControlName="uanNumber"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">ESI Number</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ESI Number</label>
             <input
               type="text"
               formControlName="esiNumber"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Resource Type</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Resource Type</label>
             <input
               type="text"
               formControlName="resourceType"
               placeholder="e.g., Full-time, Part-time, Contract"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
+          </div>
+
+          <!-- Salary Information Section -->
+          <div class="md:col-span-2 mt-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Salary Information</h3>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Basic Pay (₹)
+            </label>
+            <input
+              type="number"
+              formControlName="basicPay"
+              placeholder="Enter basic pay amount"
+              min="0"
+              step="100"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              HRA (₹)
+            </label>
+            <input
+              type="number"
+              formControlName="hra"
+              placeholder="Enter HRA amount"
+              min="0"
+              step="100"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Others (₹)
+            </label>
+            <input
+              type="number"
+              formControlName="others"
+              placeholder="Enter other allowances"
+              min="0"
+              step="100"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Incentive (₹)
+            </label>
+            <input
+              type="number"
+              formControlName="incentive"
+              placeholder="Enter incentive amount"
+              min="0"
+              step="100"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
+          </div>
+
+          <!-- Deductions Section -->
+          <div class="md:col-span-2 mt-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Deductions</h3>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              PF (₹)
+            </label>
+            <input
+              type="number"
+              formControlName="pf"
+              placeholder="Enter PF deduction"
+              min="0"
+              step="100"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              ESI (₹)
+            </label>
+            <input
+              type="number"
+              formControlName="esi"
+              placeholder="Enter ESI deduction"
+              min="0"
+              step="10"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              TDS (₹)
+            </label>
+            <input
+              type="number"
+              formControlName="tds"
+              placeholder="Enter TDS deduction"
+              min="0"
+              step="100"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Staff Advance (₹)
+            </label>
+            <input
+              type="number"
+              formControlName="staffAdvance"
+              placeholder="Enter staff advance"
+              min="0"
+              step="100"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
+          </div>
+
+          <!-- Additional Information Section -->
+          <div class="md:col-span-2 mt-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Additional Information</h3>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Additional Field
+            </label>
+            <textarea
+              formControlName="additionalFiled"
+              rows="3"
+              placeholder="Enter any additional information or notes"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"></textarea>
           </div>
 
           <!-- Address -->
           <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Address <span class="text-red-500">*</span>
             </label>
             <textarea
               formControlName="address"
               rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors"></textarea>
           </div>
         </div>
 
@@ -240,14 +415,14 @@ export interface EmployeeFormData {
         <div class="mt-8 flex justify-end space-x-4">
           <button
             type="button"
-            class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+            class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             (click)="onCancel()">
             Cancel
           </button>
           <button
             type="submit"
             [disabled]="employeeForm.invalid || isSubmitting()"
-            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50">
+            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors">
             @if (isSubmitting()) {
               <div class="flex items-center">
                 <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
@@ -291,7 +466,19 @@ export class EmployeeFormComponent implements OnInit {
     uanNumber: [''],
     esiNumber: [''],
     resourceType: [''],
-    address: ['', [Validators.required]]
+    address: ['', [Validators.required]],
+    wwtId: [''],
+    basicPay: [null, [Validators.min(0)]],
+    hra: [null, [Validators.min(0)]],
+    others: [null, [Validators.min(0)]],
+    incentive: [null, [Validators.min(0)]],
+    staffAdvance: [null, [Validators.min(0)]],
+    tds: [null, [Validators.min(0)]],
+    esi: [null, [Validators.min(0)]],
+    pf: [null, [Validators.min(0)]],
+    alternativeBankAccount: [null],
+    alternativePhoneNumber: [null],
+    additionalFiled: ['']
   });
 
   constructor() {
@@ -338,7 +525,20 @@ export class EmployeeFormComponent implements OnInit {
       esiNumber: employee.esiNumber,
       resourceType: employee.resourceType,
       address: employee.address,
-      password: employee.password
+      password: employee.password,
+      // New salary and financial fields
+      wwtId: (employee as any).wwtId || '',
+      basicPay: (employee as any).basicPay || null,
+      hra: (employee as any).hra || null,
+      others: (employee as any).others || null,
+      incentive: (employee as any).incentive || null,
+      staffAdvance: (employee as any).staffAdvance || null,
+      tds: (employee as any).tds || null,
+      esi: (employee as any).esi || null,
+      pf: (employee as any).pf || null,
+      alternativeBankAccount: (employee as any).alternativeBankAccount || null,
+      alternativePhoneNumber: (employee as any).alternativePhoneNumber || null,
+      additionalFiled: (employee as any).additionalFiled || ''
     });
   }
 

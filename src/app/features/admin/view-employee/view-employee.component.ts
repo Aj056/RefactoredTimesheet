@@ -119,8 +119,20 @@ import {
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Financial Information</h3>
                     <div class="space-y-3">
                       <div>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">WWt ID</label>
+                        <p class="text-sm text-gray-900 dark:text-white transition-colors">{{ employee()!.wwtId || 'Not provided' }}</p>
+                      </div>
+                      <div>
                         <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">Bank Account</label>
                         <p class="text-sm text-gray-900 dark:text-white transition-colors">{{ employee()!.bankAccount }}</p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">Alternative Bank Account</label>
+                        <p class="text-sm text-gray-900 dark:text-white transition-colors">{{ employee()!.alternativeBankAccount || 'Not provided' }}</p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">Alternative Phone</label>
+                        <p class="text-sm text-gray-900 dark:text-white transition-colors">{{ employee()!.alternativePhoneNumber || 'Not provided' }}</p>
                       </div>
                       <div>
                         <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">PAN Number</label>
@@ -137,6 +149,108 @@ import {
                     </div>
                   </div>
 
+                  <!-- Salary Information -->
+                  <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg transition-colors">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Salary Information</h3>
+                    <div class="space-y-3">
+                      <div>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">Basic Pay</label>
+                        <p class="text-sm text-gray-900 dark:text-white transition-colors">
+                          @if (employee()!.basicPay) {
+                            <span class="font-medium">₹{{ formatCurrency(employee()!.basicPay) }}</span>
+                          } @else {
+                            <span class="text-gray-500 dark:text-gray-400">Not provided</span>
+                          }
+                        </p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">HRA</label>
+                        <p class="text-sm text-gray-900 dark:text-white transition-colors">
+                          @if (employee()!.hra) {
+                            <span class="font-medium">₹{{ formatCurrency(employee()!.hra) }}</span>
+                          } @else {
+                            <span class="text-gray-500 dark:text-gray-400">Not provided</span>
+                          }
+                        </p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">Others</label>
+                        <p class="text-sm text-gray-900 dark:text-white transition-colors">
+                          @if (employee()!.others) {
+                            <span class="font-medium">₹{{ formatCurrency(employee()!.others) }}</span>
+                          } @else {
+                            <span class="text-gray-500 dark:text-gray-400">Not provided</span>
+                          }
+                        </p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">Incentive</label>
+                        <p class="text-sm text-gray-900 dark:text-white transition-colors">
+                          @if (employee()!.incentive) {
+                            <span class="font-medium">₹{{ formatCurrency(employee()!.incentive) }}</span>
+                          } @else {
+                            <span class="text-gray-500 dark:text-gray-400">Not provided</span>
+                          }
+                        </p>
+                      </div>
+                      <div class="pt-2 border-t border-gray-200 dark:border-gray-600">
+                        <label class="text-sm font-medium text-green-600 dark:text-green-400">Total Earnings</label>
+                        <p class="text-lg font-bold text-green-700 dark:text-green-300">₹{{ calculateTotalEarnings() }}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Deductions -->
+                  <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg transition-colors">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Deductions</h3>
+                    <div class="space-y-3">
+                      <div>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">PF</label>
+                        <p class="text-sm text-gray-900 dark:text-white transition-colors">
+                          @if (employee()!.pf) {
+                            <span class="font-medium">₹{{ formatCurrency(employee()!.pf) }}</span>
+                          } @else {
+                            <span class="text-gray-500 dark:text-gray-400">Not provided</span>
+                          }
+                        </p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">ESI</label>
+                        <p class="text-sm text-gray-900 dark:text-white transition-colors">
+                          @if (employee()!.esi) {
+                            <span class="font-medium">₹{{ formatCurrency(employee()!.esi) }}</span>
+                          } @else {
+                            <span class="text-gray-500 dark:text-gray-400">Not provided</span>
+                          }
+                        </p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">TDS</label>
+                        <p class="text-sm text-gray-900 dark:text-white transition-colors">
+                          @if (employee()!.tds) {
+                            <span class="font-medium">₹{{ formatCurrency(employee()!.tds) }}</span>
+                          } @else {
+                            <span class="text-gray-500 dark:text-gray-400">Not provided</span>
+                          }
+                        </p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">Staff Advance</label>
+                        <p class="text-sm text-gray-900 dark:text-white transition-colors">
+                          @if (employee()!.staffAdvance) {
+                            <span class="font-medium">₹{{ formatCurrency(employee()!.staffAdvance) }}</span>
+                          } @else {
+                            <span class="text-gray-500 dark:text-gray-400">Not provided</span>
+                          }
+                        </p>
+                      </div>
+                      <div class="pt-2 border-t border-gray-200 dark:border-gray-600">
+                        <label class="text-sm font-medium text-red-600 dark:text-red-400">Total Deductions</label>
+                        <p class="text-lg font-bold text-red-700 dark:text-red-300">₹{{ calculateTotalDeductions() }}</p>
+                      </div>
+                    </div>
+                  </div>
+
                   <!-- Additional Information -->
                   <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg transition-colors">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Additional Information</h3>
@@ -148,6 +262,36 @@ import {
                       <div>
                         <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">Role</label>
                         <p class="text-sm text-gray-900 dark:text-white capitalize transition-colors">{{ employee()!.role }}</p>
+                      </div>
+                      @if (employee()!.additionalFiled) {
+                        <div>
+                          <label class="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">Additional Notes</label>
+                          <p class="text-sm text-gray-900 dark:text-white transition-colors whitespace-pre-wrap">{{ employee()!.additionalFiled }}</p>
+                        </div>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Net Salary Summary -->
+                  <div class="md:col-span-2 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-900/20 dark:via-indigo-900/20 dark:to-purple-900/20 p-6 rounded-lg border border-blue-200 dark:border-blue-700/50 transition-colors">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center transition-colors">
+                      <svg class="h-6 w-6 text-blue-600 dark:text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                      </svg>
+                      Salary Summary
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                      <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                        <p class="text-sm font-medium text-green-600 dark:text-green-400">Total Earnings</p>
+                        <p class="text-2xl font-bold text-green-700 dark:text-green-300">₹{{ calculateTotalEarnings() }}</p>
+                      </div>
+                      <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                        <p class="text-sm font-medium text-red-600 dark:text-red-400">Total Deductions</p>
+                        <p class="text-2xl font-bold text-red-700 dark:text-red-300">₹{{ calculateTotalDeductions() }}</p>
+                      </div>
+                      <div class="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                        <p class="text-sm font-medium text-blue-600 dark:text-blue-400">Net Salary</p>
+                        <p class="text-3xl font-bold text-blue-700 dark:text-blue-300">₹{{ calculateNetSalary() }}</p>
                       </div>
                     </div>
                   </div>
@@ -663,5 +807,51 @@ export class ViewEmployeeComponent implements OnInit {
 
   getMonthNumber(month: number | string): number {
     return typeof month === 'string' ? parseInt(month, 10) : month;
+  }
+
+  // Currency and calculation methods for salary display
+  formatCurrency(amount: number | undefined): string {
+    if (amount === undefined || amount === null) return '0';
+    return new Intl.NumberFormat('en-IN', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
+  }
+
+  calculateTotalEarnings(): string {
+    const emp = this.employee();
+    if (!emp) return '0';
+    
+    const basicPay = emp.basicPay || 0;
+    const hra = emp.hra || 0;
+    const others = emp.others || 0;
+    const incentive = emp.incentive || 0;
+    
+    const total = basicPay + hra + others + incentive;
+    return this.formatCurrency(total);
+  }
+
+  calculateTotalDeductions(): string {
+    const emp = this.employee();
+    if (!emp) return '0';
+    
+    const pf = emp.pf || 0;
+    const esi = emp.esi || 0;
+    const tds = emp.tds || 0;
+    const staffAdvance = emp.staffAdvance || 0;
+    
+    const total = pf + esi + tds + staffAdvance;
+    return this.formatCurrency(total);
+  }
+
+  calculateNetSalary(): string {
+    const emp = this.employee();
+    if (!emp) return '0';
+    
+    const totalEarnings = (emp.basicPay || 0) + (emp.hra || 0) + (emp.others || 0) + (emp.incentive || 0);
+    const totalDeductions = (emp.pf || 0) + (emp.esi || 0) + (emp.tds || 0) + (emp.staffAdvance || 0);
+    
+    const netSalary = totalEarnings - totalDeductions;
+    return this.formatCurrency(netSalary);
   }
 }

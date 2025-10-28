@@ -69,7 +69,20 @@ export class CreateEmployeeComponent {
         resourceType: formData.resourceType || '',
         uanNumber: formData.uanNumber || '',
         workLocation: formData.workLocation,
-        password: formData.password
+        password: formData.password,
+        // New salary and financial fields
+        wwtId: formData.wwtId,
+        basicPay: formData.basicPay,
+        hra: formData.hra,
+        others: formData.others,
+        incentive: formData.incentive,
+        staffAdvance: formData.staffAdvance,
+        tds: formData.tds,
+        esi: formData.esi,
+        pf: formData.pf,
+        alternativeBankAccount: formData.alternativeBankAccount,
+        alternativePhoneNumber: formData.alternativePhoneNumber,
+        additionalFiled: formData.additionalFiled
       };
 
       const success = await this.employeeService.createEmployee(createData);

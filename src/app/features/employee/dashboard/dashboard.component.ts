@@ -9,6 +9,7 @@ import {
 } from '../../../shared/components';
 import { Employee, EmployeeService, TimeLog } from '../../../core/services/employee.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { PayslipDownloadService } from '../../../core/services/payslip-download.service';
 import { EmployeeNavigationComponent } from '../components/employee-navigation/employee-navigation.component';
 import { MotivationalQuotesComponent } from '../components/motivational-quotes/motivational-quotes.component';
 import { LiveClockComponent } from '../components/live-clock/live-clock.component';
@@ -224,6 +225,7 @@ export class DashboardComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly employeeService = inject(EmployeeService);
   private readonly authService = inject(AuthService);
+  private readonly payslipDownloadService = inject(PayslipDownloadService);
   private readonly toastService = inject(ToastService);
 
   readonly isLoading = signal(true);

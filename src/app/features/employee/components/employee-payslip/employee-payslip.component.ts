@@ -135,7 +135,7 @@ import { Router } from "@angular/router";
                   </tr>
                   <tr class="border-b">
                     <td class="py-2 px-4 font-medium text-gray-700">Employee ID :</td>
-                    <td class="py-2 px-4 text-gray-900">{{ payslipData().employeeId }}</td>
+                    <td class="py-2 px-4 text-gray-900">{{ payslipData().wwtId }}</td>
                     <td class="py-2 px-4 font-medium text-gray-700">LOP Days :</td>
                     <td class="py-2 px-4 text-gray-900">{{ payslipData().lopDays }}</td>
                   </tr>

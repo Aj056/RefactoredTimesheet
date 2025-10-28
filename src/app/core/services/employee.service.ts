@@ -34,6 +34,19 @@ export interface Employee {
   readonly status: boolean;
   readonly timelog: TimeLog[];
   readonly __v: number;
+  // New salary and financial fields
+  readonly wwtId?: string;
+  readonly basicPay?: number;
+  readonly hra?: number;
+  readonly others?: number;
+  readonly incentive?: number;
+  readonly staffAdvance?: number;
+  readonly tds?: number;
+  readonly esi?: number;
+  readonly pf?: number;
+  readonly alternativeBankAccount?: number;
+  readonly alternativePhoneNumber?: number;
+  readonly additionalFiled?: string;
 }
 
 export interface ApiResponse<T> {
@@ -59,6 +72,19 @@ export interface CreateEmployeeRequest {
   readonly role: 'admin' | 'employee';
   readonly uanNumber: string;
   readonly workLocation: string;
+  // New salary and financial fields
+  readonly wwtId?: string;
+  readonly basicPay?: number;
+  readonly hra?: number;
+  readonly others?: number;
+  readonly incentive?: number;
+  readonly staffAdvance?: number;
+  readonly tds?: number;
+  readonly esi?: number;
+  readonly pf?: number;
+  readonly alternativeBankAccount?: number;
+  readonly alternativePhoneNumber?: number;
+  readonly additionalFiled?: string;
 }
 
 export interface UpdateEmployeeRequest {
@@ -78,6 +104,19 @@ export interface UpdateEmployeeRequest {
   readonly uanNumber: string;
   readonly workLocation: string;
   readonly password: string;
+  // New salary and financial fields
+  readonly wwtId?: string;
+  readonly basicPay?: number;
+  readonly hra?: number;
+  readonly others?: number;
+  readonly incentive?: number;
+  readonly staffAdvance?: number;
+  readonly tds?: number;
+  readonly esi?: number;
+  readonly pf?: number;
+  readonly alternativeBankAccount?: number;
+  readonly alternativePhoneNumber?: number;
+  readonly additionalFiled?: string;
 }
 
 @Injectable({ providedIn: 'root' })

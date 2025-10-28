@@ -45,6 +45,11 @@ export const routes: Routes = [
     canActivate: [authGuard, adminGuard]
   },
   {
+    path: 'payslip-download',
+    loadComponent: () => import('./features/payslip-download/payslip-download.component').then(m => m.PayslipDownloadComponent)
+    // No guards - accessible without authentication for mobile app redirects
+  },
+  {
     path: '**',
     redirectTo: '/login'
   }
