@@ -198,6 +198,23 @@ interface TimeEntry {
                 </div>
               </app-card>
 
+              <app-card class="hover:shadow-lg transition-all duration-300">
+                <div class="p-4 sm:p-6 text-center">
+                  <div class="mx-auto h-12 w-12 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4 transition-colors">
+                    <svg class="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2 transition-colors">Apply</h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 transition-colors">Leave and Work from home</p>
+                  <app-reusable-button
+                    text="Apply here"
+                    variant="secondary"
+                    size="sm"
+                    (click)="navigateToApply()" />
+                </div>
+              </app-card>
+
                <app-card class="hover:shadow-lg transition-all duration-300">
                 <div class="p-4 sm:p-6 text-center">
                   <div class="mx-auto h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4 transition-colors">
@@ -370,5 +387,15 @@ export class DashboardComponent implements OnInit {
         this.toastService.error('Unable to navigate to profile. Please try refreshing the page.');
       }
     });
+  }
+  navigateToApply():void{
+    this.router.navigate(['/employee/apply-leave&wfh']).then(
+      (success)=>{
+         this.toastService.success('Navigated to Apply Leave & WFH');
+      },
+      (error)=>{
+         this.toastService.error('failed to load the page');
+      }
+    )
   }
 }

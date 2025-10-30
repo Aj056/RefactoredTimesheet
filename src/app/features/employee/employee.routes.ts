@@ -37,5 +37,11 @@ export const EMPLOYEE_ROUTES: Routes = [
     loadComponent: () => import('./components/employee-payslip/employee-payslip.component')
       .then(m => m.EmployeePayslipComponent),
     canActivate: [authGuard, employeeGuard]
+  },
+  {
+    path:'apply-leave&wfh',
+    loadComponent :()=> import('./components/applys/apply.component')
+       .then(m => m.ApplyComponent),
+       canActivate:[authGuard, employeeGuard]
   }
 ];
